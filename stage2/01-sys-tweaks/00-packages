@@ -1,10 +1,9 @@
 ssh less fbset sudo psmisc strace ed ncdu crda
 console-setup keyboard-configuration debconf-utils parted unzip
-build-essential manpages-dev python zsh neovim bash-completion git gdb pkg-config
+build-essential manpages-dev python neovim bash-completion gdb pkg-config
 python-rpi.gpio v4l-utils
 python-gpiozero
 python3-gpiozero
-avahi-daemon
 lua5.1
 luajit
 hardlink ca-certificates curl
