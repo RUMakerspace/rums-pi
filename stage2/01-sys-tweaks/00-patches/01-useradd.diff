@@ -7,7 +7,7 @@ Index: jessie-stage2/rootfs/etc/default/useradd
  # useradd is a low level utility and should be as general
  # as possible
 -SHELL=/bin/sh
-+SHELL=/bin/bash
++SHELL=/bin/zsh
  #
  # The default group for users
  # 100=users on Debian systems
