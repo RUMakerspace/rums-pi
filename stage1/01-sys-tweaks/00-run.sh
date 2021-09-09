@@ -15,6 +15,7 @@ install -m 644 files/zshrc "${ROOTFS_DIR}/${OHMYZSH}/zshrc"
 
 on_chroot << EOF
 ln ${OHMYZSH}/zshrc /etc/skel/.zshrc
+chsh -s $(which zsh) root
 EOF
 
 on_chroot << EOF
