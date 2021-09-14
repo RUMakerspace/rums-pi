@@ -10,15 +10,15 @@ ln -sf /dev/null "${ROOTFS_DIR}/etc/systemd/network/99-default.link"
 
 echo "Uninstall classic networking..."
 on_chroot << EOF
-systemctl disable --now ifupdown dhcpcd5 isc-dhcp-client isc-dhcp-common rsyslog
-apt --autoremove purge ifupdown dhcpcd5 isc-dhcp-client isc-dhcp-common rsyslog
+systemctl disable ifupdown dhcpcd dhcpcd5 isc-dhcp-client isc-dhcp-common rsyslog
+apt --autoremove -y purge ifupdown dhcpcd dhcpcd5 isc-dhcp-client isc-dhcp-common rsyslog
 rm -r /etc/network /etc/dhcp
 EOF
 
 echo "Setup/enable systemd-networkd and systemd-resolved..."
 on_chroot << EOF
-systemctl disable --now libnss-mdns
+systemctl disable libnss-mdns
 ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
-apt-mark hold avahi-daemon ifupdown dhcpcd5 isc-dhcp-client isc-dhcp-common lbnss-mdns openresolv raspberrypi-net-mods rsyslog
-systemctl enable --now systemctl-networkd systemd-resolved
+apt-mark hold avahi-daemon ifupdown dhcpcd dhcpcd5 isc-dhcp-client isc-dhcp-common libnss-mdns openresolv raspberrypi-net-mods rsyslog
+systemctl enable systemd-networkd systemd-resolved
 EOF

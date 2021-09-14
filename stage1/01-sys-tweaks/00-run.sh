@@ -15,13 +15,13 @@ install -m 644 files/zshrc "${ROOTFS_DIR}/${OHMYZSH}/zshrc"
 
 on_chroot << EOF
 ln ${OHMYZSH}/zshrc /etc/skel/.zshrc
-chsh -s $(which zsh) root
 EOF
 
 on_chroot << EOF
 if ! id -u ${FIRST_USER_NAME} >/dev/null 2>&1; then
 	adduser --disabled-password --gecos "" ${FIRST_USER_NAME}
 fi
+chsh -s $(which zsh) root
 echo "${FIRST_USER_NAME}:${FIRST_USER_PASS}" | chpasswd
 echo "root:root" | chpasswd
 EOF
