@@ -1,10 +1,13 @@
 #!/bin/bash -e
 
-install -v -d					"${ROOTFS_DIR}/etc/systemd/system/dhcpcd.service.d"
-install -v -m 644 files/wait.conf		"${ROOTFS_DIR}/etc/systemd/system/dhcpcd.service.d/"
+# install -v -d					"${ROOTFS_DIR}/etc/systemd/system/dhcpcd.service.d"
+# install -v -m 644 files/wait.conf		"${ROOTFS_DIR}/etc/systemd/system/dhcpcd.service.d/"
 
 install -v -d					"${ROOTFS_DIR}/etc/wpa_supplicant"
 install -v -m 600 files/wpa_supplicant.conf	"${ROOTFS_DIR}/etc/wpa_supplicant/"
+
+install -m 644 files/00-wired.network "${ROOTFS_DIR}/etc/systemd/network/00-wired.network"
+install -m 644 files/10-wireless.network "${ROOTFS_DIR}/etc/systemd/network/10-wireless.network"
 
 if [ -v WPA_COUNTRY ]; then
 	echo "country=${WPA_COUNTRY}" >> "${ROOTFS_DIR}/etc/wpa_supplicant/wpa_supplicant.conf"
@@ -24,6 +27,22 @@ network={
 }
 EOL
 fi
+
+# Change classic networking to systemd network stack
+echo "Uninstall classic networking..."
+on_chroot << EOF
+systemctl disable ifupdown dhcpcd dhcpcd5 isc-dhcp-client isc-dhcp-common rsyslog
+apt --autoremove -y purge ifupdown dhcpcd dhcpcd5 isc-dhcp-client isc-dhcp-common rsyslog
+rm -r /etc/network /etc/dhcp
+EOF
+
+echo "Setup/enable systemd-networkd and systemd-resolved..."
+on_chroot << EOF
+systemctl disable libnss-mdns
+ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+apt-mark hold avahi-daemon ifupdown dhcpcd dhcpcd5 isc-dhcp-client isc-dhcp-common libnss-mdns openresolv raspberrypi-net-mods rsyslog
+systemctl enable systemd-networkd systemd-resolved
+EOF
 
 # Disable wifi on 5GHz models if WPA_COUNTRY is not set
 mkdir -p "${ROOTFS_DIR}/var/lib/systemd/rfkill/"
