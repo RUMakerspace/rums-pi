@@ -1,0 +1,11 @@
+--- a/rootfs/etc/adduser.conf
++++ b/rootfs/etc/adduser.conf
+@@ -3,7 +3,7 @@
+ 
+ # The DSHELL variable specifies the default login shell on your
+ # system.
+-DSHELL=/bin/bash
++DSHELL=/bin/zsh
+ 
+ # The DHOME variable specifies the directory containing users' home
+ # directories.
